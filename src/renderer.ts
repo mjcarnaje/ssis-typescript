@@ -179,10 +179,14 @@ modalDivs.wrapper.addEventListener("click", (event) => {
 });
 
 function studentJSONToHTML(student: StudentDocWithDepartmentType) {
+  const imgEl = student.photo
+    ? `<img src="${student.photo}" alt="pic" class="h-full w-full" />`
+    : `<div class="h-full w-full flex items-center justify-center text-2xl text-gray-400">No Photo</div>`;
+
   return `
-      <div class="bg-white w-full px-4 py-12 rounded-lg shadow-sm">
-        <div class="aspect-square bg-gray-100 border overflow-hidden h-44 w-44 mx-auto rounded-full">
-          <img src="${student.photo}" alt="pic" class="h-full w-full" />
+      <div class="bg-white w-full px-4 py-8 rounded-lg shadow-sm">
+        <div class="aspect-square bg-gray-100 border overflow-hidden h-44 mx-auto rounded-full">
+          ${imgEl}
         </div>
         <div class="mt-4">
           <h1 class="text-center text-2xl font-medium">${getFullName(
@@ -325,17 +329,23 @@ mainDivs.department.form.submit.addEventListener("click", (e) => {
 
 mainDivs.student.form.submit.addEventListener("click", (e) => {
   e.preventDefault();
+  const studentForm = mainDivs.student.form;
   const studentInput: Record<keyof StudentType, string> = {
-    studentId: mainDivs.student.form.studentId.value,
-    firstName: mainDivs.student.form.firstName.value,
-    lastName: mainDivs.student.form.lastName.value,
-    birthday: mainDivs.student.form.birthday.value,
-    gender: mainDivs.student.form.gender.value,
-    departmentId: mainDivs.student.form.department.value,
-    photo: "",
-    year: mainDivs.student.form.year.value,
+    studentId: studentForm.studentId.value,
+    firstName: studentForm.firstName.value,
+    lastName: studentForm.lastName.value,
+    birthday: studentForm.birthday.value,
+    gender: studentForm.gender.value,
+    departmentId: studentForm.department.value,
+    photo: "N/A",
+    year: studentForm.year.value,
   };
+  if (Object.values(studentInput).some((value) => value === "")) {
+    alert("Please fill out all fields");
+    return;
+  }
   gS.students.addStudent(studentInput);
+  gS.colleges.joinDepartmentsToColleges();
   renderStudents();
   closeModal();
 });

@@ -1,5 +1,8 @@
 import fs from "fs";
-import { COLLEGE_TXT_PATH, DEPARTMENT_TXT_PATH } from "../constant/db-path";
+import {
+  COLLEGE_TXT_PATH,
+  DEPARTMENT_TXT_PATH,
+} from "../assets/fonts/constant/db-path";
 import { parser } from "./parser";
 import {
   CollegeInputType,
@@ -19,6 +22,8 @@ export default class CollegeService {
 
   constructor() {
     this.data = [];
+    this.colleges = [];
+    this.departments = [];
     this.selectedCollege = null;
     this.selectedDepartment = null;
   }

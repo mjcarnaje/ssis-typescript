@@ -1,5 +1,8 @@
 import fs from "fs";
-import { DEPARTMENT_TXT_PATH, STUDENT_TXT_PATH } from "../constant/db-path";
+import {
+  DEPARTMENT_TXT_PATH,
+  STUDENT_TXT_PATH,
+} from "../assets/fonts/constant/db-path";
 import { parser } from "./parser";
 import {
   DepartmentType,
@@ -15,6 +18,9 @@ export default class StudentService {
 
   constructor() {
     this.data = [];
+    this.departments = [];
+    this.students = [];
+    this.selectedStudent = null;
   }
 
   findById(id: string): StudentType {
