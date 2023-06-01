@@ -1,0 +1,1 @@
+id=koaxatclt;name=Bachelors of Civil Engineering;abbreviation=BS CivEng;collegeId=vm2oybrub;=undefined;|id=cwrtbn8g2;name=Bachelors of Computer Science;abbreviation=BSCS;collegeId=4132dq5uz;|

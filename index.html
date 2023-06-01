@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+      worker-src blob:; 
+      child-src blob: gap:;
+      img-src 'self' data: blob: https://th.bing.com;
+      default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <title>SSIS - Student Information System</title>
+    <link href="./src/main.css" rel="stylesheet" />
+  </head>
+
+  <body class="relative min-h-screen pb-24 bg-gray-50">
+    <div
+      class="relative flex items-center w-full h-16 gap-8 px-8 mx-auto shadow-sm"
+    >
+      <div class="container flex items-center px-4 mx-auto">
+        <a id="student-tab" class="px-4 cursor-pointer"> Students </a>
+        <a id="course-tab" class="px-4 cursor-pointer"> Courses </a>
+      </div>
+    </div>
+
+    <div id="student-page" class="hidden p-8">
+      <button id="add-student-btn" class="w-52">Add Student</button>
+      <div id="student-list" class="py-8 space-y-4"></div>
+    </div>
+
+    <div id="course-page" class="hidden min-h-screen p-8">
+      <button id="add-course-btn" class="w-52">Add Course</button>
+      <div id="course-list" class="py-8 space-y-4"></div>
+    </div>
+
+    <div
+      id="modal-wrapper"
+      class="fixed inset-0 z-10 items-center justify-center hidden max-h-screen bg-black bg-opacity-50"
+    >
+      <form
+        id="student-modal"
+        class="hidden w-full grid-cols-2 gap-4 p-8 bg-white border shadow-sm rounded-2xl max-w-4xl mx-auto h-[80%] m-auto"
+      >
+        <div class="col-span-2 mx-auto text-center">
+          <input type="file" class="upload-img" hidden />
+          <div
+            class="flex items-center justify-center border rounded-full h-36 w-36"
+          >
+            <button
+              type="button"
+              class="flex items-center justify-center w-full h-full text-sm font-medium rounded-full text-neutral-800 hover:bg-gray-100"
+            >
+              Upload Image
+            </button>
+          </div>
+
+          <label for="student-id" class="mt-2"> Student Photo </label>
+        </div>
+
+        <div>
+          <label for="student-id">Student ID</label>
+          <input type="text" id="student-id" placeholder="Student ID" />
+        </div>
+
+        <div>
+          <label for="student-firstname">First Name</label>
+          <input type="text" id="student-firstname" placeholder="First Name" />
+        </div>
+
+        <div>
+          <label for="student-lastname">Last Name</label>
+          <input type="text" id="student-lastname" placeholder="Last Name" />
+        </div>
+
+        <div>
+          <label for="student-birthday">Birthday</label>
+          <input type="date" id="student-birthday" placeholder="Date of Birth" />
+        </div>
+
+        <div>
+          <label for="student-gender">Gender</label>
+          <select id="student-gender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="student-college">College</label>
+          <select id="student-college">
+            <option value="">Select College</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="student-department">Department</label>
+          <select id="student-department">
+            <option value="">Select Department</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="student-year">Year</label>
+          <select id="student-year">
+            <option value="">Select Year</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+            <option value="irreg">Irregular</option>
+          </select>
+        </div>
+
+        <div class="flex justify-center col-span-2">
+          <div>
+            <button id="student-submit" class="w-52">Add Student</button>
+          </div>
+        </div>
+      </form>
+
+      <form
+        id="college-modal"
+        class="flex-col hidden w-full max-w-md gap-4 p-8 bg-white border shadow-sm rounded-2xl"
+      >
+        <div>
+          <label for="college-abbreviation">College Abbreviation</label>
+          <input
+            type="text"
+            id="college-abbreviation"
+            placeholder="College Abbreviation"
+          />
+        </div>
+        <div>
+          <label for="college-name">College</label>
+          <input type="text" id="college-name" placeholder="College name" />
+        </div>
+        <button id="college-submit" class="w-full">Save College</button>
+      </form>
+
+      <form
+        id="department-modal"
+        class="flex-col hidden w-full max-w-md gap-4 p-8 bg-white border shadow-sm rounded-2xl"
+      >
+        <div>
+          <label for="department-abbreviation">Department Abbreviation</label>
+          <input
+            type="text"
+            id="department-abbreviation"
+            placeholder="Department Abbreviation"
+          />
+        </div>
+        <div>
+          <label for="department-name">Deparment</label>
+          <input
+            type="text"
+            id="department-name"
+            placeholder="Deparment name"
+          />
+        </div>
+        <button id="department-submit" class="w-full">
+          Save Deparment
+        </button>
+      </form>
+    </div>
+  </body>
+  <script>
+    require("./dist/renderer.js");
+  </script>
+</html>

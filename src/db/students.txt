@@ -1,0 +1,1 @@
+studentId=2021-2127;firstName=Michael James;lastName=Carnaje;gender=Male;birthday=2003-01-06;photo=;departmentId=cwrtbn8g2;year=2;|

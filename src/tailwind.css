@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input {
+  @apply block w-full px-5 py-3 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-violet-500 focus:border-violet-500 focus:z-10;
+}
+
+select {
+  @apply block w-full px-5 py-3 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-violet-500 focus:border-violet-500 focus:z-10;
+}
+
+label {
+  @apply block mb-2 text-sm text-gray-700;
+}
+
+button {
+  @apply block w-full px-5 py-3 font-medium text-center text-white transition-all duration-300 ease-in-out border border-transparent rounded-lg shadow-sm bg-violet-800 hover:bg-violet-700 focus:outline-none;
+}
+.btn {
+  @apply block w-full px-5 py-3 font-medium text-center text-white transition-all duration-300 ease-in-out border border-transparent rounded-lg shadow-sm bg-violet-800 hover:bg-violet-700 focus:outline-none;
+}
+
+@font-face {
+  font-family: 'Inter-Thin';
+  src: url("./assets/fonts/Inter-Thin.ttf");
+}
+
+@font-face {
+  font-family: 'Inter-ExtraLight';
+  src: url("./assets/fonts/Inter-ExtraLight.ttf");
+}
+
+@font-face {
+  font-family: 'Inter-Light';
+  src: url("./assets/fonts/Inter-Light.ttf");
+}
+
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url("./assets/fonts/Inter-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Inter-Medium';
+  src: url("./assets/fonts/Inter-Medium.ttf");
+}
+
+@font-face {
+  font-family: 'Inter-SemiBold';
+  src: url("./assets/fonts/Inter-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: 'Inter-Bold';
+  src: url("./assets/fonts/Inter-Bold.ttf");
+}
+
+@font-face {
+  font-family: 'Inter-ExtraBold';
+  src: url("./assets/fonts/Inter-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: 'Inter-Black';
+  src: url("./assets/fonts/Inter-Black.ttf");
+}
+
+
