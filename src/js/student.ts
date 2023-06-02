@@ -1,8 +1,5 @@
 import fs from "fs";
-import {
-  DEPARTMENT_TXT_PATH,
-  STUDENT_TXT_PATH,
-} from "../assets/fonts/constant/db-path";
+import { DEPARTMENT_TXT_PATH, STUDENT_TXT_PATH } from "../constant/paths";
 import { parser } from "./parser";
 import {
   DepartmentType,
@@ -34,8 +31,17 @@ export default class StudentService {
     return department;
   }
 
-  setStudent(student: StudentType): void {
+  setStudent(studentId: string): StudentType {
+    const student = this.findById(studentId);
+
+    if (!student) {
+      console.log("Student ID does not exist");
+      return;
+    }
+
     this.selectedStudent = student;
+
+    return student;
   }
 
   setSelectedStudentToNull(): void {
@@ -51,6 +57,38 @@ export default class StudentService {
     this.students.push(student);
 
     this.persist();
+  }
+
+  deleteStudent(studentId: string): StudentType {
+    const student = this.findById(studentId);
+
+    if (!student) {
+      console.log("Student ID does not exist");
+      return;
+    }
+
+    this.students = this.students.filter(
+      (student) => student.studentId !== studentId
+    );
+
+    this.persist();
+
+    return student;
+  }
+
+  updateStudent(studentId: string, input: StudentType): StudentType {
+    const student = this.findById(studentId);
+
+    if (!student) {
+      console.log("Student ID does not exist");
+      return;
+    }
+
+    Object.assign(student, input);
+
+    this.persist();
+
+    return student;
   }
 
   joinDepartmentToStudent(): void {

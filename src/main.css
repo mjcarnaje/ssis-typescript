@@ -847,12 +847,12 @@ video {
   height: 4rem;
 }
 
-.h-36 {
-  height: 9rem;
+.h-24 {
+  height: 6rem;
 }
 
-.h-44 {
-  height: 11rem;
+.h-36 {
+  height: 9rem;
 }
 
 .h-9 {
@@ -893,6 +893,10 @@ video {
 
 .max-w-md {
   max-width: 28rem;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
 }
 
 .flex-shrink {
@@ -1413,6 +1417,10 @@ video {
 
 .justify-items-stretch {
   justify-items: stretch;
+}
+
+.gap-2 {
+  gap: 0.5rem;
 }
 
 .gap-4 {
@@ -2031,6 +2039,10 @@ video {
   padding: 0.5rem;
 }
 
+.p-4 {
+  padding: 1rem;
+}
+
 .p-6 {
   padding: 1.5rem;
 }
@@ -2057,11 +2069,6 @@ video {
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-}
-
-.py-12 {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
 }
 
 .py-4 {
@@ -2132,11 +2139,6 @@ video {
 
 .align-super {
   vertical-align: super;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
 }
 
 .text-lg {
@@ -2728,54 +2730,72 @@ button:focus {
   font-family: 'Inter-Thin';
 
   src: url("./assets/fonts/Inter-Thin.ttf");
+
+  font-weight: 100;
 }
 
 @font-face {
   font-family: 'Inter-ExtraLight';
 
   src: url("./assets/fonts/Inter-ExtraLight.ttf");
+
+  font-weight: 200;
 }
 
 @font-face {
   font-family: 'Inter-Light';
 
   src: url("./assets/fonts/Inter-Light.ttf");
+
+  font-weight: 300;
 }
 
 @font-face {
   font-family: 'Inter-Regular';
 
   src: url("./assets/fonts/Inter-Regular.ttf");
+
+  font-weight: 400;
 }
 
 @font-face {
   font-family: 'Inter-Medium';
 
   src: url("./assets/fonts/Inter-Medium.ttf");
+
+  font-weight: 500;
 }
 
 @font-face {
   font-family: 'Inter-SemiBold';
 
   src: url("./assets/fonts/Inter-SemiBold.ttf");
+
+  font-weight: 600;
 }
 
 @font-face {
   font-family: 'Inter-Bold';
 
   src: url("./assets/fonts/Inter-Bold.ttf");
+
+  font-weight: 700;
 }
 
 @font-face {
   font-family: 'Inter-ExtraBold';
 
   src: url("./assets/fonts/Inter-ExtraBold.ttf");
+
+  font-weight: 800;
 }
 
 @font-face {
   font-family: 'Inter-Black';
 
   src: url("./assets/fonts/Inter-Black.ttf");
+
+  font-weight: 900;
 }
 
 @media (min-width: 640px) {
@@ -2812,11 +2832,6 @@ button:focus {
       max-width: 1536px;
     }
   }
-}
-
-.hover\:bg-gray-100:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-green-600:hover {

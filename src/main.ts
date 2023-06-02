@@ -1,6 +1,9 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require("@electron/remote/main").initialize();
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -12,6 +15,9 @@ function createWindow() {
     },
     width: 800,
   });
+
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require("@electron/remote/main").enable(mainWindow.webContents);
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "../index.html"));

@@ -29,8 +29,8 @@
     </div>
 
     <div id="student-page" class="hidden p-8">
-      <button id="add-student-btn" class="w-52">Add Student</button>
-      <div id="student-list" class="py-8 space-y-4"></div>
+      <button id="add-student-btn" class="mx-auto w-52">Add Student</button>
+      <div id="student-list" class="w-full max-w-4xl py-8 mx-auto space-y-4"></div>
     </div>
 
     <div id="course-page" class="hidden min-h-screen p-8">
@@ -47,19 +47,20 @@
         class="hidden w-full grid-cols-2 gap-4 p-8 bg-white border shadow-sm rounded-2xl max-w-4xl mx-auto h-[80%] m-auto"
       >
         <div class="col-span-2 mx-auto text-center">
-          <input type="file" class="upload-img" hidden />
           <div
-            class="flex items-center justify-center border rounded-full h-36 w-36"
-          >
-            <button
-              type="button"
-              class="flex items-center justify-center w-full h-full text-sm font-medium rounded-full text-neutral-800 hover:bg-gray-100"
-            >
-              Upload Image
-            </button>
-          </div>
+            id="student-photo-wrapper"
+            class="flex items-center justify-center overflow-hidden border rounded-full h-36 w-36"
+          ></div>
 
-          <label for="student-id" class="mt-2"> Student Photo </label>
+          <button
+            id="student-upload"
+            type="button"
+            class="flex items-center justify-center mt-2 text-sm font-medium text-neutral-800 btn"
+          >
+            Upload Image
+          </button>
+
+          <label for="student-photo" class="mt-2"> Student Photo </label>
         </div>
 
         <div>
@@ -79,7 +80,11 @@
 
         <div>
           <label for="student-birthday">Birthday</label>
-          <input type="date" id="student-birthday" placeholder="Date of Birth" />
+          <input
+            type="date"
+            id="student-birthday"
+            placeholder="Date of Birth"
+          />
         </div>
 
         <div>
@@ -163,9 +168,7 @@
             placeholder="Deparment name"
           />
         </div>
-        <button id="department-submit" class="w-full">
-          Save Deparment
-        </button>
+        <button id="department-submit" class="w-full">Save Deparment</button>
       </form>
     </div>
   </body>

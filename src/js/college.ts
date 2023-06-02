@@ -1,8 +1,5 @@
 import fs from "fs";
-import {
-  COLLEGE_TXT_PATH,
-  DEPARTMENT_TXT_PATH,
-} from "../assets/fonts/constant/db-path";
+import { COLLEGE_TXT_PATH, DEPARTMENT_TXT_PATH } from "../constant/paths";
 import { parser } from "./parser";
 import {
   CollegeInputType,
@@ -86,8 +83,7 @@ export default class CollegeService {
       throw new Error("College not found");
     }
 
-    college.name = input.name;
-    college.abbreviation = input.abbreviation;
+    Object.assign(college, input);
 
     this.persist();
 
@@ -136,8 +132,7 @@ export default class CollegeService {
       throw new Error("Department not found");
     }
 
-    department.name = input.name;
-    department.abbreviation = input.abbreviation;
+    Object.assign(department, input);
 
     this.persist();
 

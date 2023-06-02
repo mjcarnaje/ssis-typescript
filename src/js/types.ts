@@ -32,6 +32,7 @@ export interface StudentType {
   gender: string;
   birthday: string;
   photo: string;
+  collegeId: string;
   departmentId: string;
   year: string;
 }

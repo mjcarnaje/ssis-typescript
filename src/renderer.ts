@@ -1,5 +1,8 @@
+import { dialog } from "@electron/remote";
+import fs from "fs";
+import path from "path";
 import CollegeService from "./js/college";
-import StudentService, { getFullName, getYearLevel } from "./js/student";
+import StudentService, { getFullName } from "./js/student";
 import {
   CollegeWithDepartmentsType,
   StudentDocWithDepartmentType,
@@ -22,6 +25,7 @@ interface GlobalStateType {
   modalForm: ModalType | null;
   colleges: CollegeService;
   students: StudentService;
+  currentImage: string | null;
 }
 
 const gS: GlobalStateType = {
@@ -29,6 +33,7 @@ const gS: GlobalStateType = {
   modalForm: null,
   colleges: new CollegeService(),
   students: new StudentService(),
+  currentImage: null,
 };
 
 function getElById<T extends HTMLElement>(id: string): T {
@@ -57,6 +62,8 @@ const mainDivs = {
     add: getElById<HTMLButtonElement>("add-student-btn"),
     list: getElById<HTMLDivElement>("student-list"),
     form: {
+      photoWrapper: getElById<HTMLDivElement>("student-photo-wrapper"),
+      upload: getElById<HTMLInputElement>("student-upload"),
       studentId: getElById<HTMLInputElement>("student-id"),
       firstName: getElById<HTMLInputElement>("student-firstname"),
       lastName: getElById<HTMLInputElement>("student-lastname"),
@@ -124,7 +131,7 @@ function openModal(modalType: ModalType) {
     case ModalType.Student:
       modalDivs.student.classList.remove("hidden");
       modalDivs.student.classList.add("grid");
-      loadCourseOptions();
+      loadCourseOptions(gS.students?.selectedStudent?.collegeId);
       break;
     case ModalType.College:
       modalDivs.college.classList.remove("hidden");
@@ -179,25 +186,41 @@ modalDivs.wrapper.addEventListener("click", (event) => {
 });
 
 function studentJSONToHTML(student: StudentDocWithDepartmentType) {
-  const imgEl = student.photo
-    ? `<img src="${student.photo}" alt="pic" class="h-full w-full" />`
-    : `<div class="h-full w-full flex items-center justify-center text-2xl text-gray-400">No Photo</div>`;
+  const fullName = getFullName(student);
 
-  return `
-      <div class="bg-white w-full px-4 py-8 rounded-lg shadow-sm">
-        <div class="aspect-square bg-gray-100 border overflow-hidden h-44 mx-auto rounded-full">
-          ${imgEl}
-        </div>
-        <div class="mt-4">
-          <h1 class="text-center text-2xl font-medium">${getFullName(
-            student
-          )}</h1>
-          <p class="text-center text-sm">${student.studentId}</p>
-          <p class="text-center text-sm">${getYearLevel(student)}</p>
-          <p class="text-center text-sm">${student.department.abbreviation}</p>
-        </div>
-      </div>
-  `;
+  const imgEl =
+    student.photo !== "N/A"
+      ? `<img src="${student.photo}" alt="pic" class="h-full w-full object-cover" />`
+      : `<div class="h-full w-full flex items-center justify-center text-sm text-gray-400">No Photo</div>`;
+
+  return `<div
+  class="flex items-center justify-between gap-4 w-full p-4 bg-white rounded-lg shadow-sm"
+>
+  <div
+    class="h-24 overflow-hidden bg-gray-100 border rounded-full aspect-square"
+  >
+    ${imgEl}
+  </div>
+  <div class="flex flex-col flex-1 gap-2">
+    <div w="full">
+      <h3 class="text-xl font-bold">${fullName}</h3>
+    </div>
+    <button
+    id="update-student-${student.studentId}"
+    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded"
+    >
+    Update
+    </button>
+    
+    <button
+    id="delete-student-${student.studentId}"
+    class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
+    >
+    Delete
+    </button>
+  </div>
+</div>
+`;
 }
 
 function collegeJSONToHTML(college: CollegeWithDepartmentsType) {
@@ -327,6 +350,36 @@ mainDivs.department.form.submit.addEventListener("click", (e) => {
   closeModal();
 });
 
+function saveToStorage(studentId: string, photo: string): string {
+  const newName = `${studentId}.jpg`;
+
+  if (!fs.existsSync(path.join(__dirname, "photos"))) {
+    fs.mkdirSync(path.join(__dirname, "photos"));
+  }
+
+  const newPath = path.join(__dirname, "photos", newName);
+
+  fs.copyFileSync(photo, newPath);
+
+  return newPath;
+}
+
+function clearStudentFields() {
+  const studentForm = mainDivs.student.form;
+
+  studentForm.studentId.value = "";
+  studentForm.firstName.value = "";
+  studentForm.lastName.value = "";
+  studentForm.birthday.value = "";
+  studentForm.gender.value = "";
+  studentForm.department.value = "";
+  studentForm.college.value = "";
+  studentForm.year.value = "";
+  mainDivs.student.form.photoWrapper.innerHTML = "";
+
+  gS.currentImage = null;
+}
+
 mainDivs.student.form.submit.addEventListener("click", (e) => {
   e.preventDefault();
   const studentForm = mainDivs.student.form;
@@ -336,6 +389,7 @@ mainDivs.student.form.submit.addEventListener("click", (e) => {
     lastName: studentForm.lastName.value,
     birthday: studentForm.birthday.value,
     gender: studentForm.gender.value,
+    collegeId: studentForm.college.value,
     departmentId: studentForm.department.value,
     photo: "N/A",
     year: studentForm.year.value,
@@ -344,10 +398,35 @@ mainDivs.student.form.submit.addEventListener("click", (e) => {
     alert("Please fill out all fields");
     return;
   }
-  gS.students.addStudent(studentInput);
+  if (gS.currentImage) {
+    studentInput.photo = saveToStorage(studentInput.studentId, gS.currentImage);
+  }
+
+  if (gS.students.selectedStudent) {
+    gS.students.updateStudent(
+      gS.students.selectedStudent.studentId,
+      studentInput
+    );
+    gS.students.setSelectedStudentToNull();
+  } else {
+    gS.students.addStudent(studentInput);
+  }
   gS.colleges.joinDepartmentsToColleges();
   renderStudents();
+  clearStudentFields();
   closeModal();
+});
+
+mainDivs.student.form.upload.addEventListener("click", async () => {
+  const filePaths = await dialog.showOpenDialog({
+    properties: ["openFile"],
+    filters: [{ name: "Images", extensions: ["jpg", "png"] }],
+    buttonLabel: "Upload",
+    message: "Upload a photo",
+  });
+  const filePath = filePaths.filePaths[0];
+  gS.currentImage = filePath;
+  setStudentPhotoModal(filePath);
 });
 
 mainDivs.course.list.addEventListener("click", (event) => {
@@ -395,7 +474,45 @@ mainDivs.course.list.addEventListener("click", (event) => {
   }
 });
 
-function loadCourseOptions(): void {
+function setStudentPhotoModal(imgPath: string): void {
+  const img = document.createElement("img");
+  img.src = imgPath;
+  img.className = "object-cover w-full h-full rounded-full";
+  mainDivs.student.form.photoWrapper.innerHTML = "";
+  mainDivs.student.form.photoWrapper.appendChild(img);
+}
+
+mainDivs.student.list.addEventListener("click", (event) => {
+  if (event.target instanceof HTMLButtonElement) {
+    if (event.target.id.includes("delete-student")) {
+      const studentId = event.target.id.split("-")[2];
+      console.log(studentId);
+      gS.students.deleteStudent(studentId);
+      renderStudents();
+      return;
+    }
+
+    if (event.target.id.includes("update-student")) {
+      const studentId = event.target.id.split("-")[2];
+      const student = gS.students.setStudent(studentId);
+      openModal(ModalType.Student);
+      const studentForm = mainDivs.student.form;
+      studentForm.studentId.value = student.studentId;
+      studentForm.firstName.value = student.firstName;
+      studentForm.lastName.value = student.lastName;
+      studentForm.birthday.value = student.birthday;
+      studentForm.gender.value = student.gender;
+      studentForm.college.value = student.collegeId;
+      studentForm.department.value = student.departmentId;
+      studentForm.year.value = student.year;
+      gS.currentImage = student.photo;
+      setStudentPhotoModal(student.photo);
+      return;
+    }
+  }
+});
+
+function loadCourseOptions(currentCollegeId?: string | null) {
   gS.colleges.data.forEach((college) => {
     const option = document.createElement("option");
     option.value = college.id;
@@ -405,20 +522,27 @@ function loadCourseOptions(): void {
 
   mainDivs.student.form.college.addEventListener("change", (e) => {
     const collegeId = (e.target as HTMLSelectElement).value;
-    const departments = gS.colleges.findDepartmentByCollegeId(collegeId);
+    loadDepartmentOptions(collegeId);
+  });
 
-    mainDivs.student.form.department.innerHTML = "";
+  if (currentCollegeId) {
+    loadDepartmentOptions(currentCollegeId);
+  }
+}
+
+function loadDepartmentOptions(id: string) {
+  const departments = gS.colleges.findDepartmentByCollegeId(id);
+  mainDivs.student.form.department.innerHTML = "";
+  const option = document.createElement("option");
+  option.value = "";
+  option.innerText = "Select Department";
+  mainDivs.student.form.department.appendChild(option);
+
+  departments.forEach((department) => {
     const option = document.createElement("option");
-    option.value = "";
-    option.innerText = "Select Department";
+    option.value = department.id;
+    option.innerText = department.name;
     mainDivs.student.form.department.appendChild(option);
-
-    departments.forEach((department) => {
-      const option = document.createElement("option");
-      option.value = department.id;
-      option.innerText = department.name;
-      mainDivs.student.form.department.appendChild(option);
-    });
   });
 }
 
