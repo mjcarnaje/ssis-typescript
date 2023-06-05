@@ -1,16 +1,22 @@
 import fs from "fs";
-import { DEPARTMENT_TXT_PATH, STUDENT_TXT_PATH } from "../constant/paths";
+import {
+  COLLEGE_TXT_PATH,
+  DEPARTMENT_TXT_PATH,
+  STUDENT_TXT_PATH,
+} from "../constant/paths";
 import { parser } from "./parser";
 import {
+  CollegeType,
   DepartmentType,
-  StudentDocWithDepartmentType,
+  StudentDocJoinType,
   StudentType,
 } from "./types";
 
 export default class StudentService {
-  data: StudentDocWithDepartmentType[] = [];
+  data: StudentDocJoinType[] = [];
   students: StudentType[] = [];
   departments: DepartmentType[] = [];
+  college: CollegeType[] = [];
   selectedStudent: StudentType | null = null;
 
   constructor() {
@@ -29,6 +35,11 @@ export default class StudentService {
       (department) => department.id === departmentId
     );
     return department;
+  }
+
+  findCollegeById(collegeId: string): CollegeType {
+    const college = this.college.find((college) => college.id === collegeId);
+    return college;
   }
 
   setStudent(studentId: string): StudentType {
@@ -94,18 +105,22 @@ export default class StudentService {
   joinDepartmentToStudent(): void {
     this.data = this.students.map((student) => {
       const department = this.findDepartmentById(student.departmentId);
+      const college = this.findCollegeById(student.collegeId);
       return {
         ...student,
         department,
+        college,
       };
-    }) as StudentDocWithDepartmentType[];
+    }) as StudentDocJoinType[];
   }
 
   load(): void {
     const students = fs.readFileSync(STUDENT_TXT_PATH, "utf-8");
     const departments = fs.readFileSync(DEPARTMENT_TXT_PATH, "utf-8");
+    const colleges = fs.readFileSync(COLLEGE_TXT_PATH, "utf-8");
 
     this.departments = parser.parse(departments) as DepartmentType[];
+    this.college = parser.parse(colleges) as CollegeType[];
     this.students = parser.parse(students) as StudentType[];
 
     this.joinDepartmentToStudent();

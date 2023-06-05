@@ -22,15 +22,22 @@
     <div
       class="relative flex items-center w-full h-16 gap-8 px-8 mx-auto shadow-sm"
     >
-      <div class="container flex items-center px-4 mx-auto">
-        <a id="student-tab" class="px-4 cursor-pointer"> Students </a>
-        <a id="course-tab" class="px-4 cursor-pointer"> Courses </a>
+      <div class="container flex items-center px-4 mx-auto space-x-4">
+        <a id="student-tab" class="px-5 py-2 text-sm cursor-pointer">
+          Students
+        </a>
+        <a id="course-tab" class="px-5 py-2 text-sm cursor-pointer">
+          Courses
+        </a>
       </div>
     </div>
 
     <div id="student-page" class="hidden p-8">
       <button id="add-student-btn" class="mx-auto w-52">Add Student</button>
-      <div id="student-list" class="w-full max-w-4xl py-8 mx-auto space-y-4"></div>
+      <div
+        id="student-list"
+        class="w-full max-w-4xl py-8 mx-auto space-y-4"
+      ></div>
     </div>
 
     <div id="course-page" class="hidden min-h-screen p-8">
@@ -39,24 +46,24 @@
     </div>
 
     <div
-      id="modal-wrapper"
-      class="fixed inset-0 z-10 items-center justify-center hidden max-h-screen bg-black bg-opacity-50"
+      id="modal"
+      class="fixed inset-0 z-50 items-center justify-center hidden modal"
     >
+      <div
+        class="absolute inset-0 bg-gray-900 opacity-50 pointer-events-none modal-overlay"
+      ></div>
+
       <form
         id="student-modal"
-        class="hidden w-full grid-cols-2 gap-4 p-8 bg-white border shadow-sm rounded-2xl max-w-4xl mx-auto h-[80%] m-auto"
+        class="hidden z-10 w-full grid-cols-2 gap-4 p-8 bg-white border shadow-sm rounded-2xl max-w-4xl mx-auto h-[80%] m-auto"
       >
         <div class="col-span-2 mx-auto text-center">
           <div
             id="student-photo-wrapper"
-            class="flex items-center justify-center overflow-hidden border rounded-full h-36 w-36"
+            class="flex items-center justify-center overflow-hidden border rounded-full bg-indigo-50 h-36 w-36"
           ></div>
 
-          <button
-            id="student-upload"
-            type="button"
-            class="flex items-center justify-center mt-2 text-sm font-medium text-neutral-800 btn"
-          >
+          <button id="student-upload" class="mt-2 button" type="button">
             Upload Image
           </button>
 
@@ -124,15 +131,19 @@
 
         <div class="flex justify-center col-span-2">
           <div>
-            <button id="student-submit" class="w-52">Add Student</button>
+            <button id="student-submit" class="w-52">Save Student</button>
           </div>
         </div>
       </form>
 
       <form
         id="college-modal"
-        class="flex-col hidden w-full max-w-md gap-4 p-8 bg-white border shadow-sm rounded-2xl"
+        class="z-10 flex-col hidden w-full max-w-md gap-4 p-8 bg-white border shadow-sm rounded-2xl"
       >
+        <div>
+          <label for="college-name">College Name</label>
+          <input type="text" id="college-name" placeholder="College Name" />
+        </div>
         <div>
           <label for="college-abbreviation">College Abbreviation</label>
           <input
@@ -141,17 +152,21 @@
             placeholder="College Abbreviation"
           />
         </div>
-        <div>
-          <label for="college-name">College</label>
-          <input type="text" id="college-name" placeholder="College name" />
-        </div>
         <button id="college-submit" class="w-full">Save College</button>
       </form>
 
       <form
         id="department-modal"
-        class="flex-col hidden w-full max-w-md gap-4 p-8 bg-white border shadow-sm rounded-2xl"
+        class="z-10 flex-col hidden w-full max-w-md gap-4 p-8 bg-white border shadow-sm rounded-2xl"
       >
+        <div>
+          <label for="department-name">Deparment Name</label>
+          <input
+            type="text"
+            id="department-name"
+            placeholder="Deparment Name"
+          />
+        </div>
         <div>
           <label for="department-abbreviation">Department Abbreviation</label>
           <input
@@ -160,14 +175,7 @@
             placeholder="Department Abbreviation"
           />
         </div>
-        <div>
-          <label for="department-name">Deparment</label>
-          <input
-            type="text"
-            id="department-name"
-            placeholder="Deparment name"
-          />
-        </div>
+
         <button id="department-submit" class="w-full">Save Deparment</button>
       </form>
     </div>

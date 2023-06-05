@@ -37,6 +37,7 @@ export interface StudentType {
   year: string;
 }
 
-export interface StudentDocWithDepartmentType extends StudentType {
+export interface StudentDocJoinType extends StudentType {
   department: DepartmentType;
+  college: CollegeType;
 }

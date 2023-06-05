@@ -5,7 +5,7 @@ import CollegeService from "./js/college";
 import StudentService, { getFullName } from "./js/student";
 import {
   CollegeWithDepartmentsType,
-  StudentDocWithDepartmentType,
+  StudentDocJoinType,
   StudentType,
 } from "./js/types";
 
@@ -51,7 +51,7 @@ const pageDivs = {
 };
 
 const modalDivs = {
-  wrapper: getElById<HTMLDivElement>("modal-wrapper"),
+  wrapper: getElById<HTMLDivElement>("modal"),
   student: getElById<HTMLDivElement>("student-modal"),
   college: getElById<HTMLDivElement>("college-modal"),
   department: getElById<HTMLDivElement>("department-modal"),
@@ -96,22 +96,32 @@ const mainDivs = {
 function changeTab(tab: TabType) {
   console.log("changeTab", tab);
 
-  switch (tab) {
-    case TabType.Student:
-      tabDivs.student.classList.add("underline");
-      tabDivs.course.classList.remove("underline");
-      pageDivs.student.classList.remove("block");
-      pageDivs.student.classList.remove("hidden");
-      pageDivs.course.classList.add("hidden");
-      break;
-    case TabType.Course:
-      tabDivs.student.classList.remove("underline");
-      tabDivs.course.classList.add("underline");
-      pageDivs.student.classList.add("hidden");
-      pageDivs.course.classList.remove("hidden");
-      pageDivs.course.classList.add("block");
-      break;
-  }
+  const activeClasses = [
+    "bg-indigo-100",
+    "text-indigo-700",
+    "rounded-xl",
+    "font-semibold",
+    "border",
+    "border-indigo-200",
+  ];
+
+  // Remove underline class from all tabDivs
+  Object.values(tabDivs).forEach((tabDiv) => {
+    tabDiv.classList.remove(...activeClasses);
+  });
+
+  // Add underline class to the active tabDiv
+  tabDivs[tab].classList.add(...activeClasses);
+
+  // Hide all pageDivs
+  Object.values(pageDivs).forEach((pageDiv) => {
+    pageDiv.classList.add("hidden");
+    pageDiv.classList.remove("block");
+  });
+
+  // Show the active pageDiv
+  pageDivs[tab].classList.remove("hidden");
+  pageDivs[tab].classList.add("block");
 
   gS.currentTab = tab;
 }
@@ -125,7 +135,7 @@ function openModal(modalType: ModalType) {
   console.log("openModal", modalType);
 
   modalDivs.wrapper.classList.remove("hidden");
-  modalDivs.wrapper.classList.add("flex");
+  modalDivs.wrapper.classList.add("flex", "animate-fadeIn");
 
   switch (modalType) {
     case ModalType.Student:
@@ -149,31 +159,42 @@ function openModal(modalType: ModalType) {
 function closeModal() {
   console.log("closeModal");
 
-  if (gS.modalForm) {
-    switch (gS.modalForm) {
-      case ModalType.Student:
-        modalDivs.student.classList.add("hidden");
-        break;
-      case ModalType.College:
-        modalDivs.college.classList.add("hidden");
-        mainDivs.course.form.abbreviation.value = "";
-        mainDivs.course.form.name.value = "";
-        break;
-      case ModalType.Department:
-        modalDivs.department.classList.add("hidden");
-        mainDivs.department.form.abbreviation.value = "";
-        mainDivs.department.form.name.value = "";
-        break;
-    }
-  }
+  modalDivs.wrapper.classList.add("animate-fadeOut");
 
-  modalDivs.wrapper.classList.add("hidden");
-  gS.modalForm = null;
+  setTimeout(() => {
+    modalDivs.wrapper.classList.add("hidden");
+    modalDivs.wrapper.classList.remove(
+      "flex",
+      "animate-fadeIn",
+      "animate-fadeOut"
+    );
+
+    if (gS.modalForm) {
+      switch (gS.modalForm) {
+        case ModalType.Student:
+          modalDivs.student.classList.add("hidden");
+          break;
+        case ModalType.College:
+          modalDivs.college.classList.add("hidden");
+          mainDivs.course.form.abbreviation.value = "";
+          mainDivs.course.form.name.value = "";
+          break;
+        case ModalType.Department:
+          modalDivs.department.classList.add("hidden");
+          mainDivs.department.form.abbreviation.value = "";
+          mainDivs.department.form.name.value = "";
+          break;
+      }
+    }
+
+    gS.modalForm = null;
+  }, 500);
 }
 
-mainDivs.student.add.addEventListener("click", () =>
-  openModal(ModalType.Student)
-);
+mainDivs.student.add.addEventListener("click", () => {
+  clearStudentFields();
+  openModal(ModalType.Student);
+});
 
 mainDivs.course.add.addEventListener("click", () =>
   openModal(ModalType.College)
@@ -185,7 +206,7 @@ modalDivs.wrapper.addEventListener("click", (event) => {
   }
 });
 
-function studentJSONToHTML(student: StudentDocWithDepartmentType) {
+function studentJSONToHTML(student: StudentDocJoinType) {
   const fullName = getFullName(student);
 
   const imgEl =
@@ -194,30 +215,38 @@ function studentJSONToHTML(student: StudentDocWithDepartmentType) {
       : `<div class="h-full w-full flex items-center justify-center text-sm text-gray-400">No Photo</div>`;
 
   return `<div
-  class="flex items-center justify-between gap-4 w-full p-4 bg-white rounded-lg shadow-sm"
+  class="flex items-center justify-between w-full gap-4 p-5 bg-white border rounded-xl shadow-sm"
 >
   <div
-    class="h-24 overflow-hidden bg-gray-100 border rounded-full aspect-square"
+    class="overflow-hidden bg-gray-100 border rounded-2xl h-32 aspect-square"
   >
     ${imgEl}
   </div>
   <div class="flex flex-col flex-1 gap-2">
     <div w="full">
-      <h3 class="text-xl font-bold">${fullName}</h3>
+      <h3 class="text-2xl font-bold text-gray-800">${fullName}</h3>
+      <p class="text-gray-500">
+        ${student.studentId}
+      </p>
+      <p class="text-gray-500">
+        ${student.college.abbreviation}-${student.department.abbreviation}
+      </p>
     </div>
-    <button
-    id="update-student-${student.studentId}"
-    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded"
-    >
-    Update
-    </button>
-    
-    <button
-    id="delete-student-${student.studentId}"
-    class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-    >
-    Delete
-    </button>
+    <div class="flex flex-row gap-2">
+      <button
+        id="update-student-${student.studentId}"
+        class="px-2 py-1 font-bold text-white bg-yellow-500 rounded hover:bg-yellow-600"
+      >
+        Update
+      </button>
+
+      <button
+        id="delete-student-${student.studentId}"
+        class="px-2 py-1 font-bold text-white bg-red-500 rounded hover:bg-red-600"
+      >
+        Delete
+      </button>
+    </div>
   </div>
 </div>
 `;
@@ -227,8 +256,8 @@ function collegeJSONToHTML(college: CollegeWithDepartmentsType) {
   return `<div class="flex flex-col border w-full rounded-lg p-6">
   <div class="flex flex-row w-full justify-between items-center">
     <div class="flex flex-col">
-      <span class="text-xl font-semibold">${college.abbreviation}</span>
-      <span class="text-lg">${college.name}</span>
+      <span class="text-2xl text-gray-800 font-bold">${college.name}</span>
+      <span class="text-lg">${college.abbreviation}</span>
     </div>
     <div class="flex flex-row gap-4">
       <button
@@ -282,7 +311,7 @@ function collegeJSONToHTML(college: CollegeWithDepartmentsType) {
     <button
       id="add-department-${college.id}"
       data-college-id="${college.id}"
-      class="bg-green-500 mt-4 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
+      class="bg-green-500 mt-4 hover:bg-green-600 text-white font-bold rounded"
     >
       Add Department
     </button>
@@ -485,7 +514,7 @@ function setStudentPhotoModal(imgPath: string): void {
 mainDivs.student.list.addEventListener("click", (event) => {
   if (event.target instanceof HTMLButtonElement) {
     if (event.target.id.includes("delete-student")) {
-      const studentId = event.target.id.split("-")[2];
+      const studentId = event.target.id.replace("delete-student-", "");
       console.log(studentId);
       gS.students.deleteStudent(studentId);
       renderStudents();
@@ -493,7 +522,7 @@ mainDivs.student.list.addEventListener("click", (event) => {
     }
 
     if (event.target.id.includes("update-student")) {
-      const studentId = event.target.id.split("-")[2];
+      const studentId = event.target.id.replace("update-student-", "");
       const student = gS.students.setStudent(studentId);
       openModal(ModalType.Student);
       const studentForm = mainDivs.student.form;
@@ -513,6 +542,12 @@ mainDivs.student.list.addEventListener("click", (event) => {
 });
 
 function loadCourseOptions(currentCollegeId?: string | null) {
+  mainDivs.student.form.college.innerHTML = "";
+  const option = document.createElement("option");
+  option.value = "";
+  option.innerText = "Select College";
+  mainDivs.student.form.college.appendChild(option);
+
   gS.colleges.data.forEach((college) => {
     const option = document.createElement("option");
     option.value = college.id;
