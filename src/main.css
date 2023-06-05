@@ -663,6 +663,10 @@ video {
   inset-inline-end: 0.25rem;
 }
 
+.start-1 {
+  inset-inline-start: 0.25rem;
+}
+
 .isolate {
   isolation: isolate;
 }

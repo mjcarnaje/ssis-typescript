@@ -7,13 +7,16 @@ require("@electron/remote/main").initialize();
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 600,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
     },
-    width: 800,
+    icon: path.join(__dirname, "../assets/favicon.ico"),
+
+    maxWidth: 1440,
+    maxHeight: 980,
+    title: "SSIS - Student Information System",
   });
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -21,9 +24,6 @@ function createWindow() {
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "../index.html"));
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
