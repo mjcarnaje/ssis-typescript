@@ -1,8 +1,8 @@
 import fs from "fs";
 import {
-  COLLEGE_TXT_PATH,
-  DEPARTMENT_TXT_PATH,
-  STUDENT_TXT_PATH,
+  getDbCollegePath,
+  getDbDepartmentPath,
+  getDbStudentPath,
 } from "../constant/paths";
 import { parser } from "./parser";
 import {
@@ -115,9 +115,9 @@ export default class StudentService {
   }
 
   load(): void {
-    const students = fs.readFileSync(STUDENT_TXT_PATH, "utf-8");
-    const departments = fs.readFileSync(DEPARTMENT_TXT_PATH, "utf-8");
-    const colleges = fs.readFileSync(COLLEGE_TXT_PATH, "utf-8");
+    const students = fs.readFileSync(getDbStudentPath(), "utf-8");
+    const departments = fs.readFileSync(getDbDepartmentPath(), "utf-8");
+    const colleges = fs.readFileSync(getDbCollegePath(), "utf-8");
 
     this.departments = parser.parse(departments) as DepartmentType[];
     this.college = parser.parse(colleges) as CollegeType[];
@@ -129,7 +129,7 @@ export default class StudentService {
   persist(): void {
     const students = this.students.map(parser.encode);
 
-    fs.writeFileSync(STUDENT_TXT_PATH, students.join(""));
+    fs.writeFileSync(getDbStudentPath(), students.join(""));
 
     this.joinDepartmentToStudent();
   }

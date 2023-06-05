@@ -8,6 +8,7 @@ import {
   StudentDocJoinType,
   StudentType,
 } from "./js/types";
+import { getStoragePath } from "./constant/paths";
 
 enum TabType {
   Student = "student",
@@ -382,11 +383,7 @@ mainDivs.department.form.submit.addEventListener("click", (e) => {
 function saveToStorage(studentId: string, photo: string): string {
   const newName = `${studentId}.jpg`;
 
-  if (!fs.existsSync(path.join(__dirname, "photos"))) {
-    fs.mkdirSync(path.join(__dirname, "photos"));
-  }
-
-  const newPath = path.join(__dirname, "photos", newName);
+  const newPath = path.join(getStoragePath(), newName);
 
   fs.copyFileSync(photo, newPath);
 

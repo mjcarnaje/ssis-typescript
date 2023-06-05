@@ -1,5 +1,5 @@
 import fs from "fs";
-import { COLLEGE_TXT_PATH, DEPARTMENT_TXT_PATH } from "../constant/paths";
+import { getDbCollegePath, getDbDepartmentPath } from "../constant/paths";
 import { parser } from "./parser";
 import {
   CollegeInputType,
@@ -199,8 +199,8 @@ export default class CollegeService {
   }
 
   load(): void {
-    const colleges = fs.readFileSync(COLLEGE_TXT_PATH, "utf-8");
-    const departments = fs.readFileSync(DEPARTMENT_TXT_PATH, "utf-8");
+    const colleges = fs.readFileSync(getDbCollegePath(), "utf-8");
+    const departments = fs.readFileSync(getDbDepartmentPath(), "utf-8");
 
     this.colleges = parser.parse(colleges) as CollegeType[];
     this.departments = parser.parse(departments) as DepartmentType[];
@@ -212,8 +212,8 @@ export default class CollegeService {
     const colleges = this.colleges.map(parser.encode);
     const departments = this.departments.map(parser.encode);
 
-    fs.writeFileSync(COLLEGE_TXT_PATH, colleges.join(""));
-    fs.writeFileSync(DEPARTMENT_TXT_PATH, departments.join(""));
+    fs.writeFileSync(getDbCollegePath(), colleges.join(""));
+    fs.writeFileSync(getDbDepartmentPath(), departments.join(""));
 
     this.joinDepartmentsToColleges();
   }
